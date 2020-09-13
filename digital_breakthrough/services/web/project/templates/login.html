@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Логин{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+<article class="card-body" style="max-width: 300px">
+    <form method="POST" action="/login/process">
+        <h4 class="card-title text-center mb-4 mt-1">Система входа</h4>
+        {{ form.csrf_token }}
+        <div class="form-group">
+        {{ form.name.label }} {{ form.name(size=20, class="form-control") }}
+        </div>
+        <div class="form-group">
+        {{ form.password.label }} {{ form.password(size=20, class="form-control") }}
+        </div>
+        <input type="submit" class="btn btn-primary btn-block" value="Войти">
+    </form>
+</article>
+</div>
+{% endblock %}

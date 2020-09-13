@@ -1,0 +1,13 @@
+setup.py
+project/__init__.py
+project/config.py
+project/database.py
+project/utils.py
+project/wsgi.py
+project.egg-info/PKG-INFO
+project.egg-info/SOURCES.txt
+project.egg-info/dependency_links.txt
+project.egg-info/not-zip-safe
+project.egg-info/top_level.txt
+project/templates/__init__.py
+project/templates/config.py

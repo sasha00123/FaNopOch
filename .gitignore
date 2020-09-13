@@ -1,0 +1,5 @@
+**/venv
+**/.env.dev
+**/env_variables.yaml
+**/.idea
+**/__pycache__

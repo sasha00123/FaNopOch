@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+
+
+        <title>{% block title %}{% endblock %} - Гео Контроль</title>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}"/>
+        <nav class="navbar navbar-light bg-light justify-content-end">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Главная</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Выйти</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Логин</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endblock %}
+</head>
+<body>
+    <div id="content">{% block content %}{% endblock %}</div>
+    <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery-3.3.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+</body>
+<footer>
+    {% block footer %}{% endblock %}
+</footer>
+</html>
