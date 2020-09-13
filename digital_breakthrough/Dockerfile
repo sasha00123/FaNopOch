@@ -16,7 +16,10 @@ COPY ./requirements.txt /usr/src/app/requirements.txt
 COPY ./.env.dev /usr/src/app/
 COPY services/web /usr/src/app/services/web
 
+
 RUN pip install -r requirements.txt
-RUN python services/web/project/init_default_db.py
 EXPOSE 8080
+WORKDIR /usr/src/app/services/web/project
+RUN rm db.sqlite3
+RUN python init_default_db.py
 CMD gunicorn --bind 0.0.0.0:8080 --log-level debug project.wsgi:app

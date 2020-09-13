@@ -1,83 +1,94 @@
 {% extends "base.html" %}
 {% block title %}Система анализа{% endblock %}
 {% block head %}
-    {{ super() }}
+{{ super() }}
+
 {% endblock %}
 {% block content %}
-    <div class="container mt-2">
-        <div class="row">
-            <div class="col overflow-auto" style="max-height:600px; border-left: 1px solid #eee; border-right: 1px solid #eee">
-                {% for event in unprepared_events %}
-                <a href="/{{event.id}}" class="card" {% if event.active %} style="background: #dadada"{% endif %}>
-                    <div class="card-body py-2">
-                        <svg width="1em" height="1em" style="border: black solid 1px" viewBox="0 0 16 16" class="bi bi-stop-fill" fill="{{event.color}}" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>
-                        </svg>
-                        ID: {{event.id}}, {{"%.2f"|format(event.probability*100)}}%<br>
-                        Статус: {{event.status}}
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-            <div class="col-6 px-2 mr-4">
-                <div style="position: relative;">
-                    <img id="main_img" src="{{ url_for('static', filename='test.jpg') }}" class="responsive mb-2" style="max-height:600px; top: 0px; left: 0px;">
-                    {% for layer in layers %}
-                        <img id="img-{{ layer.href }}" src="{{ layer.href }}" class="responsive mb-2 position-absolute" style="max-height:600px; top: 0px; left: 0px; opacity: 0.0">
-                    {% endfor %}
+<div class="container mt-2">
+    <div class="row">
+        <div class="col overflow-auto" style="max-height:600px; border-left: 1px solid #eee; border-right: 1px solid #eee">
+            {% for event in unprepared_events %}
+            <a href="/{{event.id}}" class="card" {% if event.active %} style="background: #dadada"{% endif %}>
+                <div class="card-body py-2">
+                    <svg width="1em" height="1em" style="border: black solid 1px" viewBox="0 0 16 16" class="bi bi-stop-fill" fill="{{event.color}}" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>
+                    </svg>
+                    ID: {{event.id}}, {{"%.2f"|format(event.probability*100)}}%<br>
+                    Статус: {{event.status}}
                 </div>
-                <div class="row my-2 justify-content-center">
-                    <a style="align-self: center" class="mr-2">Переключить слои: </a>
-                    <div id="layer_buttons" class="btn-group-toggle" data-toggle="buttons">
-                        {% for layer in layers %}
-                            <label class="btn btn-secondary">
-                                <input type="checkbox" value="{{ layer.href }}" autocomplete="off"> {{ layer.name }}
-                            </label>
-                        {% endfor %}
-                    </div>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="col-6 px-2 mr-4">
+            <div id="map" style="width: 100%; height: 100%">
+                <!--                    <img id="main_img" src="{{ url_for('static', filename='test.jpg') }}" class="responsive mb-2" style="max-height:600px; top: 0px; left: 0px;">-->
+                <!--                    {% for layer in layers %}-->
+                <!--                        <img id="img-{{ layer.href }}" src="{{ layer.href }}" class="responsive mb-2 position-absolute" style="max-height:600px; top: 0px; left: 0px; opacity: 0.0">-->
+                <!--                    {% endfor %}-->
+            </div>
 
-                </div>
-                <div class="row py-2 justify-content-center">
-                    <p>
-                        Координаты места: 12321321321321<br>
-                        Масшатб: 1/228
-                    </p>
-                </div>
-            </div>
-            <div class="col overflow-auto" style="max-height:600px; border-left: 1px solid #eee; border-right: 1px solid #eee"">
-                {% for event in prepared_events %}
-                <a href="/{{event.id}}" class="card" {% if event.active %} style="background: #dadada"{% endif %}>
-                    <div class="card-body py-2">
-                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-stop-fill" fill="{{event.color}}" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>
-                        </svg>
-                        ID: {{event.id}}, {{"%.2f"|format(event.probability*100)}}%<br>
-                        Статус: {{event.status}}
-                    </div>
-                </a>
-                {% endfor %}
+<!--            <div class="row my-2 justify-content-center">-->
+<!--                <a style="align-self: center" class="mr-2">Переключить слои: </a>-->
+<!--                <div id="layer_buttons" class="btn-group-toggle" data-toggle="buttons">-->
+<!--                    {% for layer in layers %}-->
+<!--                    <label class="btn btn-secondary">-->
+<!--                        <input type="checkbox" value="{{ layer.href }}" autocomplete="off"> {{ layer.name }}-->
+<!--                    </label>-->
+<!--                    {% endfor %}-->
+<!--                </div>-->
+
+<!--            </div>-->
+            <div class="row py-2">
+                <div class="col-12 row justify-content-center">  <div class="col-auto">Широта: </div><p id="lng">.</p> </div>
+                <div class="col-12 row justify-content-center">  <div class="col-auto">Долгота: </div><p id="lat">.</p> </div>
+                <div class="col-12 row justify-content-center">  <div class="col-auto"> Масштаб: </div><p id="scale_map">15</p></div>
             </div>
         </div>
+        <div class="col overflow-auto" style="max-height:600px; border-left: 1px solid #eee; border-right: 1px solid #eee"">
+        {% for event in prepared_events %}
+        <a href="/{{event.id}}" class="card" {% if event.active %} style="background: #dadada"{% endif %}>
+            <div class="card-body py-2">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-stop-fill" fill="{{event.color}}" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z"/>
+                </svg>
+                ID: {{event.id}}, {{"%.2f"|format(event.probability*100)}}%<br>
+                Статус: {{event.status}}
+            </div>
+        </a>
+        {% endfor %}
     </div>
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
+</div>
+</div>
+<script>
+    var event_data = {{ active_event.polygons }};
+    var event_id = {{active_event.id}};
+    console.log(event_data);
+</script>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+<script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqjnHZIo0WxYOqY3A8rgr1-CPzbaPDyRE&callback=initMap" type="text/javascript">
+</script>
+
+
 {% endblock %}
 {% block footer %}
-    <nav class="navbar fixed-bottom navbar-light bg-light justify-content-center">
-        <div class="mx-2">
-            <button type="button" class="btn btn-success btn-lg d-none d-md-block">Подтвердить</button>
-            <button type="button" class="btn btn-success btn d-block d-md-none">Подтвердить</button>
-        </div>
-        <div class="mx-2">
-            <button type="button" class="btn btn-danger btn-lg d-none d-md-block">Отклонить</button>
-            <button type="button" class="btn btn-danger btn d-block d-md-none">Отклонить</button>
-        </div>
-        <div class="mx-2">
-            <button type="button" class="btn btn-dark btn-lg d-none d-md-block">Забраковать</button>
-            <button type="button" class="btn btn-dark btn d-block d-md-none">Забраковать</button>
-        </div>
-        <div class="mx-2">
-            <button type="button" class="btn btn-light btn-lg d-none d-md-block">Сбросить</button>
-            <button type="button" class="btn btn-light btn d-block d-md-none">Сбросить</button>
-        </div>
-    </nav>
+<nav class="navbar fixed-bottom navbar-light bg-light justify-content-center">
+    <form class="mx-2" method="post" action="{{active_event.id}}/1">
+        <button type="submit" class="btn btn-success btn-lg d-none d-md-block">Подтвердить</button>
+        <button type="submit" class="btn btn-success btn d-block d-md-none">Подтвердить</button>
+    </form>
+    <form class="mx-2"  method="post" action="{{active_event.id}}/2">
+        <button type="submit" class="btn btn-danger btn-lg d-none d-md-block">Отклонить</button>
+        <button type="submit" class="btn btn-danger btn d-block d-md-none">Отклонить</button>
+    </form>
+    <form class="mx-2"  method="post" action="{{active_event.id}}/3">
+        <button type="submit" class="btn btn-dark btn-lg d-none d-md-block">Забраковать</button>
+        <button type="submit" class="btn btn-dark btn d-block d-md-none">Забраковать</button>
+    </form>
+    <form class="mx-2"  method="post" action="{{active_event.id}}/0">
+        <button type="submit" class="btn btn-light btn-lg d-none d-md-block">Сбросить</button>
+        <button type="submit" class="btn btn-light btn d-block d-md-none">Сбросить</button>
+    </form>
+</nav>
 {% endblock %}

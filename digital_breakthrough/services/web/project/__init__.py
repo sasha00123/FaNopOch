@@ -5,11 +5,12 @@ from flask import Flask, render_template, url_for, redirect, abort, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from project.form import LoginForm
 from project.config import Config
-from project.database import Base, init_db
+from project.database import Base, init_db, db_session
 from project.models import *
 from collections import namedtuple
 from project.utils import *
 import os
+
 SECRET_KEY = os.urandom(32)
 
 Layer = namedtuple("Layer", "name href")
@@ -18,8 +19,8 @@ app = Flask(__name__)
 gunicorn_logger = logging.getLogger('gunicorn.error')
 app.logger.handlers = gunicorn_logger.handlers
 app.config['SECRET_KEY'] = SECRET_KEY
-#app.config.from_object(Config)
-#db = SQLAlchemy(app)
+# app.config.from_object(Config)
+# db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -55,16 +56,20 @@ def index_without_id():
         else:
             return "Не найдено эвентов."
 
+
 @app.route('/<int:event_id>')
+@login_required
 def index(event_id):
     events = Event.query.all()
     unprepared_events = []
     prepared_events = []
+    active_event = None
     for i, event in enumerate(events):
         events[i].status = STATUS_ENUM[event.solved]
         events[i].color = COLOR_ENUM[event.solved]
-        if i+1 == event_id:
+        if i + 1 == event_id:
             events[i].active = True
+            active_event = event
         else:
             events[i].active = False
         if event.solved == 0:
@@ -79,9 +84,19 @@ def index(event_id):
             Layer(name="НеЗелень", href=url_for('static', filename='test.jpg'))
         ]
         return render_template("index.html", unprepared_events=unprepared_events,
-                               prepared_events=prepared_events, layers=layers)
+                               prepared_events=prepared_events, layers=layers, active_event=active_event)
     else:
         return redirect(url_for("login"))
+
+
+@app.route('/<int:event_id>/<int:solve_status>', methods=['POST', 'GET'])
+@login_required
+def handler(event_id, solve_status):
+    event = Event.query.get(event_id)
+    if solve_status in (0, 1, 2, 3):
+        event.solved = solve_status
+        db_session.commit()
+    return redirect(url_for("index", event_id=event_id))
 
 
 @app.route('/login', methods=['GET'])

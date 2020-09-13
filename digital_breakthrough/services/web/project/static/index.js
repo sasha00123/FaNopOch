@@ -17,6 +17,39 @@ function onMouseDown(event) {
 
 }
 
-for (let elem of layer_buttons.children) {
-    elem.addEventListener("click", onMouseDown);
+let map;
+
+lng.textContent = event_data[0][0];
+lat.textContent = event_data[0][1];
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: event_data[0][0], lng: event_data[0][1] },
+        zoom: 15,
+        mapTypeId: "satellite"
+    });
+
+    marker = new google.maps.Marker({
+        map: map,
+        position: new google.maps.LatLng(event_data[0][0], event_data[0][1])
+    });
+    infowindow = new google.maps.InfoWindow({
+        content: "<div style='float:left'><img style='max-width: 200px' src='static/photos/" + event_id + ".jpg'></div>"
+    });
+    google.maps.event.addListener(map, 'click', function() {
+        infowindow.open(map, marker);
+    });
+    infowindow.open(map, marker);
+
+
+    google.maps.event.addListener(map, 'zoom_changed', function() {
+        zoomLevel = map.getZoom();
+        scale_map.textContent = zoomLevel;
+    });
+    var polygon = new google.maps.Polygon({
+        map: map,
+        path: event_data.map(e => {return {lat: e[0], lng: e[1]}}),
+        name: "polygon",
+        fillColor: "red"
+    });
 }

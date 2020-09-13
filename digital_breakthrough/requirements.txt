@@ -10,5 +10,4 @@ Werkzeug==1.0.1
 gunicorn
 flask-wtf
 pg8000
-psycopg2-binary
 -e services/web

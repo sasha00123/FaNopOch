@@ -2,11 +2,12 @@ version: '3.7'
 
 services:
   web:
-    build: .
+    build: ./services/web
+    command: python manage.py run -h 0.0.0.0
     volumes:
       - ./services/web/:/usr/src/app/
     ports:
-      - 8080:8080
+      - 5000:5000
     env_file:
       - ./.env.dev
 

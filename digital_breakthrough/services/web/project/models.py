@@ -37,10 +37,12 @@ class Event(Base):
     id = Column(Integer, primary_key=True)
     bbox = Column(Text)
     histogram = Column(Text)
+    polygons = Column(Text)
     probability = Column(Float)
     solved = Column(Integer)
 
-    def __init__(self, histogram=None, probability=None, solved=0):
+    def __init__(self, histogram=None, probability=None, solved=0, polygons=None):
+        self.polygons = polygons
         self.histogram = histogram
         self.probability = probability
         self.solved = solved

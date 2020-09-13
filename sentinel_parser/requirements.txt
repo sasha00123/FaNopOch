@@ -1,7 +1,0 @@
-pyshp==2.1.2
-pyproj==2.6.1.post1
-matplotlib==3.3.1
-numpy==1.19.2
-sentinelhub==3.0.5
-tqdm==4.49.0
-Pillow==7.2.0
